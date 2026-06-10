@@ -49,7 +49,7 @@ jobs:
         run: ./scripts/run_static_analysis.sh
 
   deploy-pages:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.PAGES_DEPLOY_ENABLED == 'true'
     needs:
       - build-test-and-smoke
       - static-analysis
@@ -72,8 +72,6 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
