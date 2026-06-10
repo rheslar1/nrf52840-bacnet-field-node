@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#f8fafc"/>
+  <text x="80" y="75" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">nRF52840 BACnet Field Node - System Architecture</text>
+  <defs>
+    <marker id="arrow-blue" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#0369a1"/></marker>
+    <marker id="arrow-green" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#15803d"/></marker>
+    <marker id="arrow-amber" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#b45309"/></marker>
+    <marker id="arrow-pink" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#be185d"/></marker>
+    <marker id="arrow-slate" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#475569"/></marker>
+  </defs>
+  <g font-family="Arial, sans-serif">
+    <rect x="80" y="150" width="260" height="100" rx="16" fill="#e0f2fe" stroke="#0369a1" stroke-width="3"/>
+    <text x="210" y="190" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Building Operator / BMS</text>
+    <text x="210" y="220" text-anchor="middle" font-size="15" fill="#334155">BACnet write/read workflow</text>
+    <rect x="420" y="150" width="280" height="100" rx="16" fill="#dcfce7" stroke="#15803d" stroke-width="3"/>
+    <text x="560" y="190" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">BACnet Gateway / Bridge</text>
+    <text x="560" y="220" text-anchor="middle" font-size="15" fill="#334155">Object values and setpoint writes</text>
+    <rect x="800" y="145" width="300" height="110" rx="16" fill="#fef3c7" stroke="#b45309" stroke-width="3"/>
+    <text x="950" y="188" text-anchor="middle" font-size="21" font-weight="700" fill="#0f172a">FieldNode</text>
+    <text x="950" y="221" text-anchor="middle" font-size="16" fill="#334155">C++17 Facade / Aggregate Root</text>
+    <rect x="800" y="330" width="300" height="170" rx="16" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+    <text x="950" y="362" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Domain Services</text>
+    <text x="950" y="394" text-anchor="middle" font-size="15" fill="#334155">BacnetObjectMapper</text>
+    <text x="950" y="421" text-anchor="middle" font-size="15" fill="#334155">CommissioningService</text>
+    <text x="950" y="448" text-anchor="middle" font-size="15" fill="#334155">BatteryEstimator</text>
+    <text x="950" y="475" text-anchor="middle" font-size="15" fill="#334155">ISetpointPolicy</text>
+    <rect x="440" y="370" width="260" height="150" rx="16" fill="#fce7f3" stroke="#be185d" stroke-width="3"/>
+    <text x="570" y="405" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Retained Config Storage</text>
+    <text x="570" y="436" text-anchor="middle" font-size="15" fill="#334155">IConfigStorage</text>
+    <text x="570" y="463" text-anchor="middle" font-size="15" fill="#334155">FileConfigStorage now</text>
+    <text x="570" y="490" text-anchor="middle" font-size="15" fill="#334155">Nordic FDS / EEPROM later</text>
+    <rect x="800" y="590" width="300" height="160" rx="16" fill="#f1f5f9" stroke="#475569" stroke-width="3"/>
+    <text x="950" y="624" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Future nRF52840 Adapters</text>
+    <text x="950" y="655" text-anchor="middle" font-size="15" fill="#334155">SAADC battery</text>
+    <text x="950" y="682" text-anchor="middle" font-size="15" fill="#334155">I2C/SPI sensors</text>
+    <text x="950" y="709" text-anchor="middle" font-size="15" fill="#334155">BLE provisioning</text>
+    <text x="950" y="736" text-anchor="middle" font-size="15" fill="#334155">BACnet transport bridge</text>
+    <rect x="80" y="590" width="260" height="140" rx="16" fill="#ecfccb" stroke="#4d7c0f" stroke-width="3"/>
+    <text x="210" y="628" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">Host Validation</text>
+    <text x="210" y="662" text-anchor="middle" font-size="15" fill="#334155">CMake + CTest</text>
+    <text x="210" y="689" text-anchor="middle" font-size="15" fill="#334155">CLI smoke checks</text>
+    <text x="210" y="716" text-anchor="middle" font-size="15" fill="#334155">GitHub Actions</text>
+    <line x1="340" y1="200" x2="410" y2="200" stroke="#0369a1" stroke-width="5" marker-end="url(#arrow-blue)"/>
+    <line x1="700" y1="200" x2="790" y2="200" stroke="#15803d" stroke-width="5" marker-end="url(#arrow-green)"/>
+    <line x1="950" y1="255" x2="950" y2="320" stroke="#b45309" stroke-width="5" marker-end="url(#arrow-amber)"/>
+    <line x1="800" y1="430" x2="710" y2="445" stroke="#be185d" stroke-width="5" marker-end="url(#arrow-pink)"/>
+    <line x1="950" y1="500" x2="950" y2="580" stroke="#475569" stroke-width="5" marker-end="url(#arrow-slate)"/>
+    <line x1="340" y1="640" x2="790" y2="250" stroke="#4d7c0f" stroke-width="4" marker-end="url(#arrow-slate)"/>
+  </g>
+</svg>

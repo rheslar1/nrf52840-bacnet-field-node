@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#f8fafc"/>
+  <text x="80" y="75" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">C++17 Design Patterns And SOLID Boundaries</text>
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#334155"/></marker>
+  </defs>
+  <g font-family="Arial, sans-serif" fill="#0f172a">
+    <rect x="540" y="145" width="320" height="120" rx="16" fill="#fef3c7" stroke="#b45309" stroke-width="3"/>
+    <text x="700" y="186" text-anchor="middle" font-size="22" font-weight="700">FieldNode</text>
+    <text x="700" y="218" text-anchor="middle" font-size="16" fill="#334155">Facade / Aggregate Root</text>
+    <text x="700" y="246" text-anchor="middle" font-size="16" fill="#334155">Coordinates domain services</text>
+    <rect x="90" y="350" width="260" height="90" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <text x="220" y="386" text-anchor="middle" font-size="18" font-weight="700">ISetpointPolicy</text>
+    <text x="220" y="416" text-anchor="middle" font-size="15" fill="#334155">Strategy Interface</text>
+    <rect x="90" y="500" width="260" height="90" rx="16" fill="#eff6ff" stroke="#60a5fa" stroke-width="3"/>
+    <text x="220" y="536" text-anchor="middle" font-size="18" font-weight="700">ClampedSetpointPolicy</text>
+    <text x="220" y="566" text-anchor="middle" font-size="15" fill="#334155">Concrete Strategy</text>
+    <rect x="420" y="350" width="280" height="90" rx="16" fill="#fce7f3" stroke="#be185d" stroke-width="3"/>
+    <text x="560" y="386" text-anchor="middle" font-size="18" font-weight="700">IConfigStorage</text>
+    <text x="560" y="416" text-anchor="middle" font-size="15" fill="#334155">Repository / Adapter Interface</text>
+    <rect x="420" y="500" width="280" height="90" rx="16" fill="#fff1f2" stroke="#fb7185" stroke-width="3"/>
+    <text x="560" y="536" text-anchor="middle" font-size="18" font-weight="700">FileConfigStorage</text>
+    <text x="560" y="566" text-anchor="middle" font-size="15" fill="#334155">Host EEPROM Adapter</text>
+    <rect x="780" y="350" width="280" height="110" rx="16" fill="#dcfce7" stroke="#15803d" stroke-width="3"/>
+    <text x="920" y="386" text-anchor="middle" font-size="18" font-weight="700">BacnetObjectMapper</text>
+    <text x="920" y="416" text-anchor="middle" font-size="15" fill="#334155">Mapper Pattern</text>
+    <text x="920" y="442" text-anchor="middle" font-size="15" fill="#334155">Protocol view generation</text>
+    <rect x="1110" y="350" width="260" height="110" rx="16" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+    <text x="1240" y="386" text-anchor="middle" font-size="18" font-weight="700">CommissioningService</text>
+    <text x="1240" y="416" text-anchor="middle" font-size="15" fill="#334155">Service Object</text>
+    <text x="1240" y="442" text-anchor="middle" font-size="15" fill="#334155">Provision + lock rules</text>
+    <rect x="780" y="550" width="280" height="110" rx="16" fill="#ecfccb" stroke="#4d7c0f" stroke-width="3"/>
+    <text x="920" y="586" text-anchor="middle" font-size="18" font-weight="700">BatteryEstimator</text>
+    <text x="920" y="616" text-anchor="middle" font-size="15" fill="#334155">Single Responsibility</text>
+    <text x="920" y="642" text-anchor="middle" font-size="15" fill="#334155">Percent + runtime + alarm</text>
+    <rect x="420" y="700" width="640" height="90" rx="16" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+    <text x="740" y="735" text-anchor="middle" font-size="18" font-weight="700">SOLID Result</text>
+    <text x="740" y="765" text-anchor="middle" font-size="15" fill="#334155">Each class has one clear reason to change.</text>
+    <line x1="610" y1="265" x2="340" y2="350" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="220" y1="440" x2="220" y2="490" stroke="#60a5fa" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="660" y1="265" x2="590" y2="340" stroke="#be185d" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="560" y1="440" x2="560" y2="490" stroke="#fb7185" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="760" y1="265" x2="880" y2="340" stroke="#15803d" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="840" y1="245" x2="1160" y2="340" stroke="#6d28d9" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="760" y1="265" x2="900" y2="540" stroke="#4d7c0f" stroke-width="5" marker-end="url(#arrow)"/>
+  </g>
+</svg>

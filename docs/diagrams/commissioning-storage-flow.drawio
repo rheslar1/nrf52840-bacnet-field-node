@@ -1,0 +1,52 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Commissioning And Storage Flow">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Commissioning And Retained Storage Flow" style="text;html=1;strokeColor=none;fillColor=none;fontSize=30;fontStyle=1;fontColor=#0f172a" vertex="1" parent="1">
+          <mxGeometry x="80" y="40" width="1000" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="factory" value="Factory Node&lt;br&gt;Default config&lt;br&gt;commission_state=factory" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#475569;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="180" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="provision" value="Provision Command&lt;br&gt;device instance&lt;br&gt;zone + room&lt;br&gt;BACnet MAC + BLE addr" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="430" y="180" width="260" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="validate" value="Validate Config&lt;br&gt;bounds&lt;br&gt;labels&lt;br&gt;identity&lt;br&gt;checksum" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#15803d;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="790" y="180" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="save" value="Save Retained Config&lt;br&gt;IConfigStorage&lt;br&gt;File now&lt;br&gt;FDS / EEPROM later" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce7f3;strokeColor=#be185d;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1110" y="180" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="reset" value="Reset / Reboot&lt;br&gt;load config&lt;br&gt;reject bad checksum" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#b45309;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="790" y="460" width="240" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="objects" value="BACnet Object Table&lt;br&gt;setpoints&lt;br&gt;telemetry&lt;br&gt;battery alarm&lt;br&gt;commission state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#6d28d9;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="430" y="460" width="260" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lock" value="Optional Lock&lt;br&gt;commission_state=locked&lt;br&gt;reject reprovision" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="100" y="460" width="240" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#2563eb" edge="1" parent="1" source="factory" target="provision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#15803d" edge="1" parent="1" source="provision" target="validate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#be185d" edge="1" parent="1" source="validate" target="save">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#b45309" edge="1" parent="1" source="save" target="reset">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#6d28d9" edge="1" parent="1" source="reset" target="objects">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#dc2626" edge="1" parent="1" source="objects" target="lock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

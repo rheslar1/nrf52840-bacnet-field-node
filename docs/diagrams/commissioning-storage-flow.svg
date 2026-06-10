@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <rect width="1400" height="900" fill="#f8fafc"/>
+  <text x="80" y="75" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#0f172a">Commissioning And Retained Storage Flow</text>
+  <defs>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#334155"/></marker>
+  </defs>
+  <g font-family="Arial, sans-serif" fill="#0f172a">
+    <rect x="100" y="180" width="240" height="110" rx="16" fill="#f8fafc" stroke="#475569" stroke-width="3"/>
+    <text x="220" y="216" text-anchor="middle" font-size="18" font-weight="700">Factory Node</text>
+    <text x="220" y="247" text-anchor="middle" font-size="15" fill="#334155">Default config</text>
+    <text x="220" y="274" text-anchor="middle" font-size="15" fill="#334155">state=factory</text>
+    <rect x="430" y="180" width="260" height="130" rx="16" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <text x="560" y="214" text-anchor="middle" font-size="18" font-weight="700">Provision Command</text>
+    <text x="560" y="246" text-anchor="middle" font-size="15" fill="#334155">device instance</text>
+    <text x="560" y="273" text-anchor="middle" font-size="15" fill="#334155">zone + room</text>
+    <text x="560" y="300" text-anchor="middle" font-size="15" fill="#334155">BACnet MAC + BLE addr</text>
+    <rect x="790" y="180" width="240" height="130" rx="16" fill="#dcfce7" stroke="#15803d" stroke-width="3"/>
+    <text x="910" y="214" text-anchor="middle" font-size="18" font-weight="700">Validate Config</text>
+    <text x="910" y="246" text-anchor="middle" font-size="15" fill="#334155">bounds</text>
+    <text x="910" y="273" text-anchor="middle" font-size="15" fill="#334155">labels + identity</text>
+    <text x="910" y="300" text-anchor="middle" font-size="15" fill="#334155">checksum</text>
+    <rect x="1110" y="180" width="240" height="130" rx="16" fill="#fce7f3" stroke="#be185d" stroke-width="3"/>
+    <text x="1230" y="214" text-anchor="middle" font-size="18" font-weight="700">Save Retained Config</text>
+    <text x="1230" y="246" text-anchor="middle" font-size="15" fill="#334155">IConfigStorage</text>
+    <text x="1230" y="273" text-anchor="middle" font-size="15" fill="#334155">File now</text>
+    <text x="1230" y="300" text-anchor="middle" font-size="15" fill="#334155">FDS / EEPROM later</text>
+    <rect x="790" y="460" width="240" height="110" rx="16" fill="#fef3c7" stroke="#b45309" stroke-width="3"/>
+    <text x="910" y="496" text-anchor="middle" font-size="18" font-weight="700">Reset / Reboot</text>
+    <text x="910" y="527" text-anchor="middle" font-size="15" fill="#334155">load config</text>
+    <text x="910" y="554" text-anchor="middle" font-size="15" fill="#334155">reject bad checksum</text>
+    <rect x="430" y="460" width="260" height="140" rx="16" fill="#ede9fe" stroke="#6d28d9" stroke-width="3"/>
+    <text x="560" y="494" text-anchor="middle" font-size="18" font-weight="700">BACnet Object Table</text>
+    <text x="560" y="526" text-anchor="middle" font-size="15" fill="#334155">setpoints</text>
+    <text x="560" y="553" text-anchor="middle" font-size="15" fill="#334155">telemetry + battery alarm</text>
+    <text x="560" y="580" text-anchor="middle" font-size="15" fill="#334155">commission state</text>
+    <rect x="100" y="460" width="240" height="120" rx="16" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+    <text x="220" y="498" text-anchor="middle" font-size="18" font-weight="700">Optional Lock</text>
+    <text x="220" y="530" text-anchor="middle" font-size="15" fill="#334155">state=locked</text>
+    <text x="220" y="557" text-anchor="middle" font-size="15" fill="#334155">reject reprovision</text>
+    <line x1="340" y1="235" x2="420" y2="235" stroke="#2563eb" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="690" y1="245" x2="780" y2="245" stroke="#15803d" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="1030" y1="245" x2="1100" y2="245" stroke="#be185d" stroke-width="5" marker-end="url(#arrow)"/>
+    <path d="M1230 310 C1230 390 1040 390 940 450" fill="none" stroke="#b45309" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="790" y1="520" x2="700" y2="530" stroke="#6d28d9" stroke-width="5" marker-end="url(#arrow)"/>
+    <line x1="430" y1="530" x2="350" y2="530" stroke="#dc2626" stroke-width="5" marker-end="url(#arrow)"/>
+  </g>
+</svg>

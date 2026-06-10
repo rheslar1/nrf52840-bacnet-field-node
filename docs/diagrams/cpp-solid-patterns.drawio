@@ -1,0 +1,61 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="C++17 SOLID And Pattern Map">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="C++17 Design Patterns And SOLID Boundaries" style="text;html=1;strokeColor=none;fillColor=none;fontSize=30;fontStyle=1;fontColor=#0f172a" vertex="1" parent="1">
+          <mxGeometry x="80" y="40" width="1000" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="fieldnode" value="FieldNode&lt;br&gt;Facade / Aggregate Root&lt;br&gt;Coordinates domain services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#b45309;fontSize=17;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="540" y="145" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="policy" value="ISetpointPolicy&lt;br&gt;Strategy Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="90" y="350" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="clamp" value="ClampedSetpointPolicy&lt;br&gt;Concrete Strategy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eff6ff;strokeColor=#60a5fa;fontSize=15" vertex="1" parent="1">
+          <mxGeometry x="90" y="500" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="storage" value="IConfigStorage&lt;br&gt;Repository / Adapter Interface" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce7f3;strokeColor=#be185d;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="420" y="350" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="file" value="FileConfigStorage&lt;br&gt;Host EEPROM Adapter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff1f2;strokeColor=#fb7185;fontSize=15" vertex="1" parent="1">
+          <mxGeometry x="420" y="500" width="280" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mapper" value="BacnetObjectMapper&lt;br&gt;Mapper Pattern&lt;br&gt;Protocol view generation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#15803d;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="780" y="350" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="commission" value="CommissioningService&lt;br&gt;Service Object&lt;br&gt;Provision + lock rules" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#6d28d9;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1110" y="350" width="260" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="battery" value="BatteryEstimator&lt;br&gt;Single Responsibility&lt;br&gt;Percent + runtime + alarm" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfccb;strokeColor=#4d7c0f;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="780" y="550" width="280" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="solid" value="SOLID Result&lt;br&gt;Storage, policy, mapping, commissioning, and battery logic each have one reason to change." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#475569;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="420" y="700" width="640" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#2563eb" edge="1" parent="1" source="fieldnode" target="policy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#60a5fa" edge="1" parent="1" source="policy" target="clamp">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#be185d" edge="1" parent="1" source="fieldnode" target="storage">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#fb7185" edge="1" parent="1" source="storage" target="file">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#15803d" edge="1" parent="1" source="fieldnode" target="mapper">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#6d28d9" edge="1" parent="1" source="fieldnode" target="commission">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="endArrow=block;html=1;rounded=0;strokeWidth=3;strokeColor=#4d7c0f" edge="1" parent="1" source="fieldnode" target="battery">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

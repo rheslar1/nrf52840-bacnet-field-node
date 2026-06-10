@@ -1,0 +1,11 @@
+device_instance=700001
+zone=Tower-B
+room=Server-Room
+commission_state=provisioned
+ble_address=D6:2C:40:10:BA:C0
+bacnet_mac=52:84:40:10:00:01:BA:C0
+occupied_setpoint_f=72.0
+battery_mv=3000
+battery_percent=83.3
+runtime_estimate_days=4336.3
+low_battery_alarm=false

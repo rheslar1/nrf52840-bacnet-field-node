@@ -1,39 +1,117 @@
 # nRF52840 BACnet Field Node
 
-Battery-aware field device profile with persistent setpoint storage, commissioning evidence, and BACnet object mapping.
+C++17 embedded systems project for a battery-aware nRF52840 field node that maps room telemetry and retained setpoints into a BACnet-oriented object model.
 
-## Portfolio Purpose
+The repository is intentionally host-buildable first. The current implementation models the field-node domain, commissioning flow, EEPROM-style retained configuration, BACnet object mapping, setpoint safety policy, and battery-runtime estimation without requiring Nordic hardware on day one.
 
-This repository is an Embedded Systems project scaffold for the Rheslar portfolio. It is designed to become a hardware-backed project with build output, validation logs, and reviewable implementation evidence.
+Intended remote:
 
-## Stack
+```text
+git@github.com:rheslar1/nrf52840-bacnet-field-node.git
+```
 
-- nRF52840
-- C
-- EEPROM
-- BACnet
-- BLE-ready
+## What This Project Demonstrates
+
+- C++17 embedded application structure.
+- C++ design patterns applied to a practical field-device problem.
+- SOLID design principles in a small codebase.
+- BACnet object modeling for building automation.
+- Persistent setpoint/configuration storage abstraction.
+- Commissioning workflow for field deployment evidence.
+- Battery-aware telemetry and low-power runtime estimation.
+- Host-side CMake, CTest, and GitHub Actions validation.
+
+## Current Implementation
+
+```text
+include/field_node/FieldNode.hpp    Public C++17 domain API
+src/FieldNode.cpp                   Field-node implementation
+src/main.cpp                        CLI simulator for commissioning and telemetry
+tests/FieldNodeTests.cpp            Host-side C++ validation tests
+docs/                              Detailed engineering documentation
+examples/                          Sample commissioning output
+```
+
+## Diagrams
+
+| Diagram | PNG | Editable Draw.io |
+| --- | --- | --- |
+| Field node system architecture | [PNG](docs/diagrams/field-node-system.png) | [Draw.io](docs/diagrams/field-node-system.drawio) |
+| C++17 SOLID and pattern map | [PNG](docs/diagrams/cpp-solid-patterns.png) | [Draw.io](docs/diagrams/cpp-solid-patterns.drawio) |
+| Commissioning and storage flow | [PNG](docs/diagrams/commissioning-storage-flow.png) | [Draw.io](docs/diagrams/commissioning-storage-flow.drawio) |
 
 ## Quick Start
 
 ```bash
 cmake -S . -B build
 cmake --build build
-./build/nrf52840_bacnet_field_node
-python -m unittest discover -s tests
+ctest --test-dir build --output-on-failure
+./build/nrf52840_bacnet_field_node --status
+./build/nrf52840_bacnet_field_node --objects
 ```
 
-## Implementation Slices
+Useful simulator commands:
 
-- Native starter executable that exposes the project identity, stack, and validation target.
-- Architecture document with control boundaries, data flow, safety assumptions, and evidence plan.
-- Unit smoke test that keeps source, docs, and CI files present as the repo grows.
-- GitHub Actions workflow for configure, build, executable smoke run, and repository validation.
+```bash
+./build/nrf52840_bacnet_field_node --commission 700001 Tower-B Server-Room
+./build/nrf52840_bacnet_field_node --sample 24.2 52 2210 0
+./build/nrf52840_bacnet_field_node --setpoint 90
+./build/nrf52840_bacnet_field_node --save field-node-eeprom.txt
+./build/nrf52840_bacnet_field_node --load field-node-eeprom.txt
+```
 
-## Evidence Target
+## C++17 Design Patterns
 
-Provisioning path for wireless and wired building devices with retained configuration.
+| Pattern | Where | Why |
+| --- | --- | --- |
+| Strategy | `ISetpointPolicy`, `ClampedSetpointPolicy` | Setpoint write policy can change without changing `FieldNode`. |
+| Repository / Adapter | `IConfigStorage`, `FileConfigStorage` | Host file persistence can be replaced by nRF52 flash/FDS/EEPROM storage. |
+| Mapper | `BacnetObjectMapper` | BACnet object generation is isolated from device state ownership. |
+| Service Object | `CommissioningService` | Provisioning and lock rules are separated from CLI and storage. |
+| Facade / Aggregate Root | `FieldNode` | A single domain entry point coordinates config, samples, objects, and reports. |
 
-## Remote
+## SOLID Principles
 
-Intended public repository: https://github.com/rheslar1/nrf52840-bacnet-field-node
+| Principle | Implementation |
+| --- | --- |
+| Single Responsibility | Battery estimation, BACnet mapping, commissioning, storage, and setpoint policy are separate types. |
+| Open/Closed | New storage backends or setpoint policies can be added through interfaces. |
+| Liskov Substitution | `IConfigStorage` and `ISetpointPolicy` implementations are replaceable by contract. |
+| Interface Segregation | Storage and setpoint policies are small, focused interfaces. |
+| Dependency Inversion | `FieldNode` depends on abstractions for setpoint behavior and storage. |
+
+## BACnet Object Model
+
+The host model exposes nine BACnet-style objects:
+
+- Device object for the node identity.
+- Writable occupied and unoccupied setpoint analog values.
+- Temperature, humidity, and battery-voltage analog inputs.
+- Occupancy binary input.
+- Low-battery binary value.
+- Commissioning-state multi-state value.
+
+See [docs/bacnet-object-map.md](docs/bacnet-object-map.md).
+
+## Hardware Path
+
+The current host implementation is ready to map onto nRF52840 firmware layers:
+
+- Replace `FileConfigStorage` with Nordic FDS, flash page storage, or external EEPROM.
+- Replace CLI sensor samples with SAADC/I2C/SPI/BLE sensor adapters.
+- Connect `BacnetObjectMapper` output to BACnet MS/TP, BACnet/IP gateway payloads, or a building gateway bridge.
+- Replace host CMake toolchain with a Zephyr or Nordic nRF Connect SDK board target.
+
+## Validation Status
+
+The current repo validates:
+
+- C++17 configure/build.
+- CTest execution.
+- Setpoint clamping safety.
+- Commissioning and lock workflow.
+- BACnet object map generation.
+- Low battery alarm mapping.
+- Retained config save/load checksum validation.
+
+See [docs/validation-plan.md](docs/validation-plan.md).
