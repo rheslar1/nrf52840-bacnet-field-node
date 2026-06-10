@@ -1,6 +1,7 @@
 #include "field_node/FieldNode.hpp"
 
 #include <algorithm>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <limits>
@@ -75,6 +76,39 @@ double clamp(double value, double minValue, double maxValue) {
 
 bool nonEmpty(const std::string& value) {
   return !value.empty();
+}
+
+double temperatureF(double temperatureC) {
+  return (temperatureC * 9.0 / 5.0) + 32.0;
+}
+
+std::string jsonEscape(const std::string& value) {
+  std::ostringstream escaped;
+
+  for (const char character : value) {
+    switch (character) {
+      case '\\':
+        escaped << "\\\\";
+        break;
+      case '"':
+        escaped << "\\\"";
+        break;
+      case '\n':
+        escaped << "\\n";
+        break;
+      case '\r':
+        escaped << "\\r";
+        break;
+      case '\t':
+        escaped << "\\t";
+        break;
+      default:
+        escaped << character;
+        break;
+    }
+  }
+
+  return escaped.str();
 }
 
 }  // namespace
@@ -223,6 +257,55 @@ double BatteryEstimator::runtimeDays(const SensorSample& sample, const BatteryPr
   }
 
   return usableMah / dailyMah;
+}
+
+std::vector<FieldAlarm> AlarmEvaluator::evaluate(
+  const RetainedConfig& config,
+  const SensorSample& sample,
+  const BatteryEstimator& batteryEstimator
+) const {
+  std::vector<FieldAlarm> alarms;
+
+  if (sample.batteryMillivolts < 2100u) {
+    alarms.push_back({AlarmPriority::Critical, "BATTERY_CRITICAL", "Battery is below critical transmit reserve", static_cast<double>(sample.batteryMillivolts), 2100.0});
+  } else if (batteryEstimator.lowBatteryAlarm(sample.batteryMillivolts)) {
+    alarms.push_back({AlarmPriority::Warning, "BATTERY_LOW", "Battery is below low-battery alarm threshold", static_cast<double>(sample.batteryMillivolts), 2300.0});
+  }
+
+  const double zoneTemperatureF = temperatureF(sample.temperatureC);
+  const double activeSetpointF = sample.occupancyDetected ? config.occupiedSetpointF : config.unoccupiedSetpointF;
+  const double comfortDriftF = std::fabs(zoneTemperatureF - activeSetpointF);
+  if (comfortDriftF > 6.0) {
+    alarms.push_back({AlarmPriority::Critical, "COMFORT_DRIFT_CRITICAL", "Zone temperature is more than 6 F from active setpoint", comfortDriftF, 6.0});
+  } else if (comfortDriftF > 3.0) {
+    alarms.push_back({AlarmPriority::Warning, "COMFORT_DRIFT", "Zone temperature is more than 3 F from active setpoint", comfortDriftF, 3.0});
+  }
+
+  if (sample.humidityPercent < 20.0 || sample.humidityPercent > 75.0) {
+    alarms.push_back({AlarmPriority::Warning, "HUMIDITY_OUT_OF_RANGE", "Relative humidity is outside the warning band", sample.humidityPercent, sample.humidityPercent < 20.0 ? 20.0 : 75.0});
+  } else if (sample.humidityPercent < 30.0 || sample.humidityPercent > 65.0) {
+    alarms.push_back({AlarmPriority::Advisory, "HUMIDITY_ADVISORY", "Relative humidity is outside the preferred comfort band", sample.humidityPercent, sample.humidityPercent < 30.0 ? 30.0 : 65.0});
+  }
+
+  if (sample.rssiDbm <= -95) {
+    alarms.push_back({AlarmPriority::Warning, "RADIO_LINK_WEAK", "BLE radio link budget is near the commissioning limit", static_cast<double>(sample.rssiDbm), -95.0});
+  } else if (sample.rssiDbm <= -85) {
+    alarms.push_back({AlarmPriority::Advisory, "RADIO_LINK_ADVISORY", "BLE radio link should be reviewed during commissioning", static_cast<double>(sample.rssiDbm), -85.0});
+  }
+
+  return alarms;
+}
+
+AlarmPriority AlarmEvaluator::highestPriority(const std::vector<FieldAlarm>& alarms) const {
+  AlarmPriority highest = AlarmPriority::Normal;
+
+  for (const auto& alarm : alarms) {
+    if (static_cast<int>(alarm.priority) > static_cast<int>(highest)) {
+      highest = alarm.priority;
+    }
+  }
+
+  return highest;
 }
 
 std::vector<BacnetObject> BacnetObjectMapper::map(
@@ -390,6 +473,36 @@ std::optional<BacnetObject> FieldNode::findObject(BacnetObjectType type, std::ui
   return *found;
 }
 
+std::vector<FieldAlarm> FieldNode::alarms() const {
+  return alarmEvaluator_.evaluate(config_, sample_, batteryEstimator_);
+}
+
+AlarmPriority FieldNode::highestAlarmPriority() const {
+  return alarmEvaluator_.highestPriority(alarms());
+}
+
+TelemetryFrame FieldNode::telemetryFrame(std::uint32_t sequence) const {
+  const auto activeAlarms = alarms();
+
+  return {
+    sequence,
+    config_.deviceInstance,
+    config_.zoneLabel,
+    config_.roomLabel,
+    config_.commissionState,
+    sample_,
+    batteryPercent(),
+    runtimeDays(),
+    alarmEvaluator_.highestPriority(activeAlarms),
+    bacnetObjects(),
+    activeAlarms
+  };
+}
+
+std::string FieldNode::telemetryPayload(std::uint32_t sequence) const {
+  return encodeTelemetryFrame(telemetryFrame(sequence));
+}
+
 double FieldNode::batteryPercent() const {
   return batteryEstimator_.percent(sample_.batteryMillivolts);
 }
@@ -414,6 +527,8 @@ std::string FieldNode::commissioningReport() const {
          << "battery_mv=" << sample_.batteryMillivolts << '\n'
          << "battery_percent=" << std::setprecision(1) << batteryPercent() << '\n'
          << "runtime_estimate_days=" << std::setprecision(1) << runtimeDays() << '\n'
+         << "highest_alarm_priority=" << toString(highestAlarmPriority()) << '\n'
+         << "active_alarm_count=" << alarms().size() << '\n'
          << "low_battery_alarm=" << (lowBatteryAlarm() ? "true" : "false") << '\n';
   return report.str();
 }
@@ -512,6 +627,21 @@ std::string toString(BacnetObjectType type) {
   return "unknown";
 }
 
+std::string toString(AlarmPriority priority) {
+  switch (priority) {
+    case AlarmPriority::Normal:
+      return "normal";
+    case AlarmPriority::Advisory:
+      return "advisory";
+    case AlarmPriority::Warning:
+      return "warning";
+    case AlarmPriority::Critical:
+      return "critical";
+  }
+
+  return "unknown";
+}
+
 std::string formatMac(const std::array<std::uint8_t, kBacnetMacLength>& mac) {
   std::ostringstream stream;
 
@@ -524,6 +654,62 @@ std::string formatMac(const std::array<std::uint8_t, kBacnetMacLength>& mac) {
   }
 
   return stream.str();
+}
+
+std::string encodeTelemetryFrame(const TelemetryFrame& frame) {
+  std::ostringstream payload;
+  payload << std::fixed << std::setprecision(2);
+  payload << "{"
+          << "\"sequence\":" << frame.sequence << ','
+          << "\"deviceInstance\":" << frame.deviceInstance << ','
+          << "\"zoneLabel\":\"" << jsonEscape(frame.zoneLabel) << "\","
+          << "\"roomLabel\":\"" << jsonEscape(frame.roomLabel) << "\","
+          << "\"commissionState\":\"" << toString(frame.commissionState) << "\","
+          << "\"sample\":{"
+          << "\"temperatureC\":" << frame.sample.temperatureC << ','
+          << "\"humidityPercent\":" << frame.sample.humidityPercent << ','
+          << "\"batteryMillivolts\":" << frame.sample.batteryMillivolts << ','
+          << "\"occupancyDetected\":" << (frame.sample.occupancyDetected ? "true" : "false") << ','
+          << "\"rssiDbm\":" << static_cast<int>(frame.sample.rssiDbm)
+          << "},"
+          << "\"batteryPercent\":" << frame.batteryPercent << ','
+          << "\"runtimeDays\":" << frame.runtimeDays << ','
+          << "\"highestAlarmPriority\":\"" << toString(frame.highestAlarmPriority) << "\",";
+
+  payload << "\"alarms\":[";
+  for (std::size_t index = 0u; index < frame.alarms.size(); ++index) {
+    const auto& alarm = frame.alarms[index];
+    if (index > 0u) {
+      payload << ',';
+    }
+    payload << "{"
+            << "\"priority\":\"" << toString(alarm.priority) << "\","
+            << "\"code\":\"" << jsonEscape(alarm.code) << "\","
+            << "\"message\":\"" << jsonEscape(alarm.message) << "\","
+            << "\"measuredValue\":" << alarm.measuredValue << ','
+            << "\"thresholdValue\":" << alarm.thresholdValue
+            << "}";
+  }
+  payload << "],";
+
+  payload << "\"objects\":[";
+  for (std::size_t index = 0u; index < frame.objects.size(); ++index) {
+    const auto& object = frame.objects[index];
+    if (index > 0u) {
+      payload << ',';
+    }
+    payload << "{"
+            << "\"type\":\"" << toString(object.type) << "\","
+            << "\"instance\":" << object.instance << ','
+            << "\"name\":\"" << jsonEscape(object.name) << "\","
+            << "\"presentValue\":" << object.presentValue << ','
+            << "\"writable\":" << (object.writable ? "true" : "false") << ','
+            << "\"units\":\"" << jsonEscape(object.units) << "\""
+            << "}";
+  }
+  payload << "]}";
+
+  return payload.str();
 }
 
 }  // namespace field_node

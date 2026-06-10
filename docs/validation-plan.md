@@ -10,6 +10,8 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ./build/nrf52840_bacnet_field_node --status
 ./build/nrf52840_bacnet_field_node --objects
+./build/nrf52840_bacnet_field_node --alarms
+./build/nrf52840_bacnet_field_node --telemetry 42
 ```
 
 The C++ tests validate:
@@ -20,6 +22,8 @@ The C++ tests validate:
 - provisioning,
 - commissioning lock behavior,
 - low-battery alarm object,
+- alarm priority evaluation,
+- telemetry frame serialization,
 - retained config save/load round trip.
 
 ## CLI Evidence
@@ -29,6 +33,8 @@ Capture these commands:
 ```bash
 ./build/nrf52840_bacnet_field_node --commission 700001 Tower-B Server-Room
 ./build/nrf52840_bacnet_field_node --sample 24.2 52 2210 0
+./build/nrf52840_bacnet_field_node --alarms
+./build/nrf52840_bacnet_field_node --telemetry 42
 ./build/nrf52840_bacnet_field_node --setpoint 90
 ./build/nrf52840_bacnet_field_node --objects
 ```
@@ -40,6 +46,7 @@ Capture these commands:
 - Domain logic separated from CLI.
 - Storage access goes through `IConfigStorage`.
 - Setpoint behavior goes through `ISetpointPolicy`.
+- Alarm thresholds go through `AlarmEvaluator`.
 - BACnet mapping goes through `BacnetObjectMapper`.
 - Commissioning rules are covered by tests.
 

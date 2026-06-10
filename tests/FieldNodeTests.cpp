@@ -56,6 +56,43 @@ void testSensorSamplesAndObjectMap() {
   assert(batteryObject->presentValue == 1.0);
 }
 
+void testAlarmEvaluationPrioritizesCriticalEvents() {
+  field_node::FieldNode node;
+
+  node.applySensorSample({31.0, 82.0, 2050u, true, -98});
+
+  const auto alarms = node.alarms();
+  assert(!alarms.empty());
+  assert(node.highestAlarmPriority() == field_node::AlarmPriority::Critical);
+
+  bool foundBatteryCritical = false;
+  bool foundComfortCritical = false;
+  for (const auto& alarm : alarms) {
+    foundBatteryCritical = foundBatteryCritical || alarm.code == "BATTERY_CRITICAL";
+    foundComfortCritical = foundComfortCritical || alarm.code == "COMFORT_DRIFT_CRITICAL";
+  }
+
+  assert(foundBatteryCritical);
+  assert(foundComfortCritical);
+}
+
+void testTelemetryFrameSerializesObjectsAndAlarms() {
+  field_node::FieldNode node;
+
+  node.applySensorSample({24.2, 52.0, 2210u, false, -70});
+
+  const auto frame = node.telemetryFrame(42u);
+  assert(frame.sequence == 42u);
+  assert(frame.objects.size() == node.bacnetObjects().size());
+  assert(!frame.alarms.empty());
+
+  const std::string payload = node.telemetryPayload(42u);
+  assert(payload.find("\"sequence\":42") != std::string::npos);
+  assert(payload.find("\"alarms\"") != std::string::npos);
+  assert(payload.find("BATTERY_LOW") != std::string::npos);
+  assert(payload.find("\"objects\"") != std::string::npos);
+}
+
 void testStorageRoundTrip() {
   const std::string path = "field-node-test-eeprom.txt";
   field_node::FieldNode node;
@@ -84,6 +121,8 @@ int main() {
   testSetpointPolicyClampsWrites();
   testCommissioningAndLock();
   testSensorSamplesAndObjectMap();
+  testAlarmEvaluationPrioritizesCriticalEvents();
+  testTelemetryFrameSerializesObjectsAndAlarms();
   testStorageRoundTrip();
   return 0;
 }

@@ -40,3 +40,23 @@ This models a safe BMS write boundary. A real BACnet write-property handler woul
 ```
 
 The command prints a CSV-style object table for review and portfolio evidence.
+
+## Alarm and Telemetry Relationship
+
+The BACnet object table stays stable for BMS discovery. Dynamic operating risk is evaluated separately by `AlarmEvaluator` so threshold policy can evolve without changing object identity.
+
+Current active alarm rules cover:
+
+- low and critical battery reserve,
+- occupied or unoccupied comfort drift from the active setpoint,
+- humidity outside preferred and warning bands,
+- weak BLE RSSI during commissioning or periodic reports.
+
+Use these commands to review the dynamic layer:
+
+```bash
+./build/nrf52840_bacnet_field_node --alarms
+./build/nrf52840_bacnet_field_node --telemetry 42
+```
+
+`--telemetry` emits a deterministic JSON-style payload containing the sample, battery estimate, highest alarm priority, active alarms, and current BACnet object table.

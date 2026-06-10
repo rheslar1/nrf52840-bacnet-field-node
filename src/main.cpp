@@ -17,6 +17,8 @@ void printUsage(const char* programName) {
             << "Commands:\n"
             << "  --status                         Print commissioning and battery status\n"
             << "  --objects                        Print BACnet object map\n"
+            << "  --alarms                         Print active alarm evaluation\n"
+            << "  --telemetry SEQUENCE             Print serialized telemetry frame\n"
             << "  --sample TEMP HUMIDITY MV OCC    Apply a simulated sensor sample\n"
             << "  --setpoint DEG_F                 Clamp and write occupied setpoint\n"
             << "  --commission INSTANCE ZONE ROOM  Provision BACnet instance and labels\n"
@@ -39,6 +41,21 @@ void printObjects(const field_node::FieldNode& node) {
               << (object.writable ? "yes" : "no") << ','
               << object.units << ','
               << object.description << '\n';
+  }
+}
+
+void printAlarms(const field_node::FieldNode& node) {
+  const auto alarms = node.alarms();
+  std::cout << "highest_priority=" << field_node::toString(node.highestAlarmPriority()) << '\n';
+  std::cout << "active_alarm_count=" << alarms.size() << '\n';
+  std::cout << "priority,code,measured,threshold,message\n";
+
+  for (const auto& alarm : alarms) {
+    std::cout << field_node::toString(alarm.priority) << ','
+              << alarm.code << ','
+              << alarm.measuredValue << ','
+              << alarm.thresholdValue << ','
+              << alarm.message << '\n';
   }
 }
 
@@ -67,6 +84,17 @@ int main(int argc, char** argv) {
 
     if (command == "--objects") {
       printObjects(node);
+      return 0;
+    }
+
+    if (command == "--alarms") {
+      printAlarms(node);
+      return 0;
+    }
+
+    if (command == "--telemetry") {
+      const std::uint32_t sequence = argc >= 3 ? static_cast<std::uint32_t>(std::stoul(argv[2])) : 1u;
+      std::cout << node.telemetryPayload(sequence) << '\n';
       return 0;
     }
 

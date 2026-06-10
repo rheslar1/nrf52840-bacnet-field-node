@@ -29,6 +29,13 @@ enum class BacnetObjectType {
   MultiStateValue
 };
 
+enum class AlarmPriority {
+  Normal,
+  Advisory,
+  Warning,
+  Critical
+};
+
 struct BacnetObject {
   BacnetObjectType type;
   std::uint32_t instance;
@@ -45,6 +52,14 @@ struct SensorSample {
   std::uint16_t batteryMillivolts;
   bool occupancyDetected;
   std::int8_t rssiDbm;
+};
+
+struct FieldAlarm {
+  AlarmPriority priority;
+  std::string code;
+  std::string message;
+  double measuredValue;
+  double thresholdValue;
 };
 
 struct BatteryProfile {
@@ -76,6 +91,20 @@ struct RetainedConfig {
 struct ValidationResult {
   bool ok;
   std::string message;
+};
+
+struct TelemetryFrame {
+  std::uint32_t sequence;
+  std::uint32_t deviceInstance;
+  std::string zoneLabel;
+  std::string roomLabel;
+  CommissionState commissionState;
+  SensorSample sample;
+  double batteryPercent;
+  double runtimeDays;
+  AlarmPriority highestAlarmPriority;
+  std::vector<BacnetObject> objects;
+  std::vector<FieldAlarm> alarms;
 };
 
 class IConfigStorage {
@@ -112,6 +141,17 @@ class BatteryEstimator final {
   double percent(std::uint16_t batteryMillivolts) const;
   bool lowBatteryAlarm(std::uint16_t batteryMillivolts) const;
   double runtimeDays(const SensorSample& sample, const BatteryProfile& profile) const;
+};
+
+class AlarmEvaluator final {
+ public:
+  std::vector<FieldAlarm> evaluate(
+    const RetainedConfig& config,
+    const SensorSample& sample,
+    const BatteryEstimator& batteryEstimator
+  ) const;
+
+  AlarmPriority highestPriority(const std::vector<FieldAlarm>& alarms) const;
 };
 
 class BacnetObjectMapper final {
@@ -166,6 +206,10 @@ class FieldNode final {
 
   std::vector<BacnetObject> bacnetObjects() const;
   std::optional<BacnetObject> findObject(BacnetObjectType type, std::uint32_t instance) const;
+  std::vector<FieldAlarm> alarms() const;
+  AlarmPriority highestAlarmPriority() const;
+  TelemetryFrame telemetryFrame(std::uint32_t sequence) const;
+  std::string telemetryPayload(std::uint32_t sequence) const;
   double batteryPercent() const;
   double runtimeDays() const;
   bool lowBatteryAlarm() const;
@@ -180,6 +224,7 @@ class FieldNode final {
   BatteryProfile batteryProfile_;
   std::unique_ptr<ISetpointPolicy> setpointPolicy_;
   BatteryEstimator batteryEstimator_;
+  AlarmEvaluator alarmEvaluator_;
   BacnetObjectMapper objectMapper_;
   CommissioningService commissioningService_;
 };
@@ -190,7 +235,9 @@ ValidationResult validateConfig(const RetainedConfig& config);
 
 std::string toString(CommissionState state);
 std::string toString(BacnetObjectType type);
+std::string toString(AlarmPriority priority);
 std::string formatMac(const std::array<std::uint8_t, kBacnetMacLength>& mac);
+std::string encodeTelemetryFrame(const TelemetryFrame& frame);
 
 }  // namespace field_node
 
