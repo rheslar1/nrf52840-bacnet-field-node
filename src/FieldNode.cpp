@@ -297,15 +297,15 @@ std::vector<FieldAlarm> AlarmEvaluator::evaluate(
 }
 
 AlarmPriority AlarmEvaluator::highestPriority(const std::vector<FieldAlarm>& alarms) const {
-  AlarmPriority highest = AlarmPriority::Normal;
-
-  for (const auto& alarm : alarms) {
-    if (static_cast<int>(alarm.priority) > static_cast<int>(highest)) {
-      highest = alarm.priority;
+  const auto highest = std::max_element(
+    alarms.begin(),
+    alarms.end(),
+    [](const FieldAlarm& left, const FieldAlarm& right) {
+      return static_cast<int>(left.priority) < static_cast<int>(right.priority);
     }
-  }
+  );
 
-  return highest;
+  return highest == alarms.end() ? AlarmPriority::Normal : highest->priority;
 }
 
 std::vector<BacnetObject> BacnetObjectMapper::map(
@@ -387,9 +387,9 @@ FieldNode::FieldNode(RetainedConfig config, std::unique_ptr<ISetpointPolicy> set
 }
 
 RetainedConfig FieldNode::defaultConfig() {
-  RetainedConfig config{};
-  refreshChecksum(config);
-  return config;
+  RetainedConfig defaultConfigValue{};
+  refreshChecksum(defaultConfigValue);
+  return defaultConfigValue;
 }
 
 SensorSample FieldNode::defaultSample() {

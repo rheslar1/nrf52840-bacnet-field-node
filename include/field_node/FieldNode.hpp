@@ -14,13 +14,13 @@ constexpr std::uint32_t kConfigMagic = 0x4E424143u;
 constexpr std::uint16_t kConfigVersion = 1u;
 constexpr std::size_t kBacnetMacLength = 8u;
 
-enum class CommissionState {
+enum class CommissionState : std::uint8_t {
   Factory,
   Provisioned,
   Locked
 };
 
-enum class BacnetObjectType {
+enum class BacnetObjectType : std::uint8_t {
   AnalogInput,
   AnalogValue,
   BinaryInput,
@@ -29,7 +29,7 @@ enum class BacnetObjectType {
   MultiStateValue
 };
 
-enum class AlarmPriority {
+enum class AlarmPriority : std::uint8_t {
   Normal,
   Advisory,
   Warning,

@@ -1,8 +1,12 @@
-name: CI
+name: CI, Static Analysis, and Deploy
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build-test-and-smoke:
@@ -11,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Configure C++17 build
-        run: cmake -S . -B build -DNRF_FIELD_NODE_BUILD_TESTS=ON
+        run: cmake -S . -B build -DNRF_FIELD_NODE_BUILD_TESTS=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Build
         run: cmake --build build
@@ -24,3 +28,56 @@ jobs:
 
       - name: CLI BACnet map smoke test
         run: ./build/nrf52840_bacnet_field_node --objects
+
+      - name: CLI alarm smoke test
+        run: ./build/nrf52840_bacnet_field_node --alarms
+
+      - name: CLI telemetry smoke test
+        run: ./build/nrf52840_bacnet_field_node --telemetry 42
+
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install static analysis tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck clang-tidy
+
+      - name: Run cppcheck and clang-tidy
+        run: ./scripts/run_static_analysis.sh
+
+  deploy-pages:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs:
+      - build-test-and-smoke
+      - static-analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate static project site
+        run: python3 tools/generate_pages_site.py
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

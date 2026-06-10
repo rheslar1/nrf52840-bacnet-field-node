@@ -22,6 +22,7 @@ git@github.com:rheslar1/nrf52840-bacnet-field-node.git
 - Serialized telemetry frame ready for a gateway or BMS bridge.
 - Battery-aware telemetry and low-power runtime estimation.
 - Host-side CMake, CTest, and GitHub Actions validation.
+- CI, static analysis, and GitHub Pages deployment automation.
 
 ## Current Implementation
 
@@ -41,6 +42,12 @@ examples/                          Sample commissioning output
 | Field node system architecture | [PNG](docs/diagrams/field-node-system.png) | [Draw.io](docs/diagrams/field-node-system.drawio) |
 | C++17 SOLID and pattern map | [PNG](docs/diagrams/cpp-solid-patterns.png) | [Draw.io](docs/diagrams/cpp-solid-patterns.drawio) |
 | Commissioning and storage flow | [PNG](docs/diagrams/commissioning-storage-flow.png) | [Draw.io](docs/diagrams/commissioning-storage-flow.drawio) |
+
+## Automation
+
+GitHub Actions runs CMake, CTest, CLI smoke tests, `cppcheck`, and `clang-tidy`. Pushes to `main` deploy a generated static evidence site to GitHub Pages after those gates pass.
+
+See [docs/ci-static-analysis-and-deploy.md](docs/ci-static-analysis-and-deploy.md).
 
 ## Quick Start
 

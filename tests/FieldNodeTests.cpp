@@ -106,7 +106,8 @@ void testStorageRoundTrip() {
   assert(node.save(storage, error));
 
   field_node::FieldNode restored;
-  assert(restored.load(storage, error));
+  const bool loaded = restored.load(storage, error);
+  assert(loaded);
   assert(restored.config().deviceInstance == 700010u);
   assert(restored.config().occupiedSetpointF == 73.5);
   assert(restored.config().zoneLabel == "Floor-2");
