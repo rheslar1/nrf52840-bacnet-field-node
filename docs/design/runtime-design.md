@@ -4,46 +4,35 @@
 
 | Module | Responsibility |
 | --- | --- |
-| `app` | CLI, startup, argument parsing, and process status. |
-| `domain` | Project-specific state, calculations, and decisions. |
-| `adapters` | Hardware, OS, transport, persistence, model, or simulator integration. |
+| `app` | Startup and CLI or firmware entry point. |
+| `domain` | Project-specific state and decisions. |
+| `adapters` | Hardware, OS, transport, persistence, or simulator integration. |
 | `policy` | Safety and readiness gates. |
-| `reporting` | Human-readable reports, telemetry, logs, or persistence statements. |
-| `tests` | Scripted scenarios and edge-case checks. |
+| `reporting` | Telemetry, logs, reports, or persistence output. |
+| `tests` | Scripted scenarios and edge cases. |
 
-## C++17 Design
-
-Recommended implementation style:
-
-- Use plain structs for input, state, decisions, and issues.
-- Use strong enums for scenario, state, severity, and command types.
-- Use `std::optional` for recoverable missing values.
-- Use `std::variant` only when the domain has a real closed set of alternatives.
-- Prefer explicit dependencies passed to constructors.
-- Keep ownership simple with values, references, and `std::unique_ptr` for polymorphic strategies.
-
-## Design Patterns
+## C++17 Pattern Map
 
 | Pattern | Use |
 | --- | --- |
-| Strategy | Swap processors, validators, model engines, update policies, or control algorithms. |
-| Adapter | Hide target-specific APIs behind stable project interfaces. |
-| Facade | Provide a small runtime object that executes one complete scenario or cycle. |
-| Composite | Combine multiple validation rules into one policy gate. |
-| Repository/Sink | Isolate persistence, telemetry, or evidence output. |
+| Strategy | Swap validators, processors, model engines, or control algorithms. |
+| Adapter | Hide target APIs behind stable contracts. |
+| Facade | Expose one small runtime object for a full cycle. |
+| Composite | Combine validation rules. |
+| Repository/Sink | Isolate evidence output and persistence. |
 
-## Nominal Sequence
+## SOLID Mapping
 
-1. Build a runtime profile for `nrf52840-bacnet-field-node`.
-2. Construct adapters and policies through dependency injection.
-3. Collect scripted or target-backed input.
-4. Convert input into domain state.
-5. Evaluate policy gates.
-6. Emit accepted output or rejected diagnostic evidence.
-7. Return deterministic status for CI and automation.
+| Principle | Design Choice |
+| --- | --- |
+| Single Responsibility | Acquisition, processing, policy, and reporting are separate modules. |
+| Open/Closed | New adapters and policies can be added without rewriting orchestration. |
+| Liskov Substitution | Test fixtures can replace target adapters under the same contract. |
+| Interface Segregation | Each interface has one narrow purpose. |
+| Dependency Inversion | Runtime code depends on abstractions instead of hardware or framework details. |
 
 ## Project-Specific Focus
 
 Battery-aware field device profile with persistent setpoint storage, commissioning evidence, and BACnet object mapping.
 
-The runtime must make this focus measurable through logs, reports, tests, diagrams, or hardware captures. The proof point for review is: Provisioning path for wireless and wired building devices with retained configuration.
+Review proof point: Provisioning path for wireless and wired building devices with retained configuration.
